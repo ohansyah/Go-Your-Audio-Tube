@@ -2,6 +2,9 @@
 
 A lightweight, high-performance Go web application that proxies YouTube audio streams. It allows users to listen to YouTube content in the background (mobile-friendly) without ads and without saving files to the server.
 
+## Screenshots
+![Home](public/home.png)
+
 ## Features
 
 - **Direct Stream Proxying**: Pipes audio directly from YouTube to the client using `io.Copy`. minimal memory footprint.
