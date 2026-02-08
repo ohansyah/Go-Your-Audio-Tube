@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Audio Tube</title>
+    <meta name="description" content="Transform heavy video into pure, lightweight audio. Background play enabled.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        liverpool: {
+                            red: '#C8102E',      /* Liverpool Red */
+                            darkred: '#9d0c24',
+                            gold: '#F6EB61',     /* Liverpool Gold */
+                            darkgold: '#c4bb4d',
+                            cream: '#F5F5F5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'drop-in': 'dropIn 1s ease-out forwards',
+                        'filter-pass': 'filterPass 2s ease-in-out forwards 1s',
+                        'emerge': 'emerge 1s ease-out forwards 2.5s',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        dropIn: {
+                            '0%': { transform: 'translateY(-100px) scale(1.2)', opacity: '0' },
+                            '60%': { transform: 'translateY(10px) scale(1)', opacity: '1' },
+                            '100%': { transform: 'translateY(0) scale(1)', opacity: '1' }
+                        },
+                        filterPass: {
+                            '0%': { transform: 'scale(1)', filter: 'brightness(1)' },
+                            '50%': { transform: 'scale(0.8)', filter: 'brightness(1.5) sepia(1)' }, // turning gold
+                            '100%': { transform: 'scale(0)', opacity: '0' } // Disappear into the funnel
+                        },
+                        emerge: {
+                            '0%': { transform: 'translateY(20px) scale(0.5)', opacity: '0' },
+                            '100%': { transform: 'translateY(0) scale(1)', opacity: '1' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(246, 235, 97, 0.2)' },
+                            '50%': { boxShadow: '0 0 25px rgba(246, 235, 97, 0.6)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0F0F0F;
+            /* Very dark background to pop the red */
+            background-image: radial-gradient(circle at 50% 0%, #3e060f 0%, #0F0F0F 70%);
+        }
+
+        .glass-panel {
+            background: rgba(200, 16, 46, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(246, 235, 97, 0.1);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f0408;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #9d0c24;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C8102E;
+        }
+    </style>
+</head>
+
+<body
+    class="text-liverpool-cream min-h-screen flex flex-col font-sans antialiased overflow-x-hidden selection:bg-liverpool-red selection:text-white">
+
+    <!-- Hero / Visual Section -->
+    <div class="flex-grow flex flex-col items-center justify-center p-6 w-full max-w-4xl mx-auto relative z-10">
+
+        <!-- Main Content Glass Card -->
+        <div
+            class="w-full max-w-lg glass-panel rounded-2xl p-8 shadow-[0_0_50px_rgba(200,16,46,0.15)] relative overflow-hidden group">
+
+            <!-- Glow Effect -->
+            <div
+                class="absolute -top-20 -right-20 w-40 h-40 bg-liverpool-red blur-[100px] opacity-20 rounded-full pointer-events-none group-hover:opacity-30 transition-opacity duration-700">
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-bold text-center mb-2 tracking-tight text-white">
+                Your <span
+                    class="text-liverpool-red inline-block transform hover:scale-105 transition-transform cursor-default">Audio</span>
+                Tube
+            </h1>
+
+            <p class="text-center text-gray-400 mb-8 font-light text-sm md:text-base max-w-xs mx-auto leading-relaxed">
+                <span class="text-liverpool-gold">Why carry the weight?</span> <br>
+                Strip away the visual noise. Experience pure, lightweight audio freedom.
+            </p>
+
+            <form id="proxyForm" class="space-y-5 relative z-10">
+                <div class="group/input">
+                    <label for="url"
+                        class="block text-xs font-bold text-liverpool-gold mb-2 uppercase tracking-wide ml-1">YouTube
+                        URL</label>
+                    <div class="relative">
+                        <input type="url" id="url" name="url" required placeholder="Paste your link here..."
+                            class="w-full px-5 py-4 bg-gray-900/80 border border-gray-700 rounded-xl focus:ring-2 focus:ring-liverpool-red focus:border-transparent outline-none transition-all placeholder-gray-600 text-white font-medium shadow-inner">
+                        <!-- Icon inside input -->
+                        <div
+                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-600 group-focus-within/input:text-liverpool-red transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn"
+                    class="w-full py-4 px-6 bg-gradient-to-r from-liverpool-red to-liverpool-darkred hover:from-[#d91233] hover:to-[#b00e28] text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-liverpool-red/30 transform active:scale-98 transition-all flex items-center justify-center gap-3 overflow-hidden relative">
+                    <span class="relative z-10 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Extract Audio
+                    </span>
+                    <!-- Shine Effect -->
+                    <div
+                        class="absolute top-0 -left-full w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 transition-all duration-700 ease-out group-hover:translate-x-[200%]">
+                    </div>
+                </button>
+            </form>
+
+            <!-- Player Status & Controls -->
+            <div id="playerContainer"
+                class="mt-8 hidden transition-all duration-700 ease-out transform opacity-0 translate-y-4">
+                <div class="bg-gray-900/60 rounded-xl p-5 border border-liverpool-gold/20 backdrop-blur-md">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-2 h-2 rounded-full bg-liverpool-green animate-pulse bg-green-500"></div>
+                            <p class="text-sm text-liverpool-gold font-medium truncate" id="statusText">Ready to play
+                            </p>
+                        </div>
+                        <div class="text-xs text-gray-500 font-mono">LIVE</div>
+                    </div>
+
+                    <audio id="audioPlayer" controls autoplay
+                        class="w-full custom-audio hue-rotate-[340deg] invert-[.05]">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <p class="text-xs text-gray-500 mt-4 text-center opacity-60">
+                    Streamed directly. No server storage.
+                </p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorContainer"
+                class="mt-6 hidden p-4 bg-red-900/30 border border-liverpool-red/50 rounded-xl text-red-200 text-sm flex items-start gap-3 backdrop-blur-sm animate-shake">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-liverpool-red shrink-0 mt-0.5"
+                    viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                <div id="errorText"></div>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 text-center text-gray-600 text-xs font-light">
+            <p>&copy; 2026 Your Audio Tube. Built for Background Play.</p>
+        </footer>
+
+    </div>
+
+    <!-- Background Ambient Glows -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div
+            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-liverpool-red rounded-full mix-blend-screen filter blur-[120px] opacity-10 animate-pulse-glow">
+        </div>
+        <div
+            class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900 rounded-full mix-blend-screen filter blur-[120px] opacity-5">
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('proxyForm');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playerContainer = document.getElementById('playerContainer');
+        const errorContainer = document.getElementById('errorContainer');
+        const errorText = document.getElementById('errorText');
+        const statusText = document.getElementById('statusText');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Animation logic for the submission
+        function playSubmissionAnimation() {
+            const heavyBlock = document.getElementById('heavyBlock');
+            // Reset animations (simple way)
+            // ideally we trigger a new class sequence
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const urlInput = document.getElementById('url');
+            const url = urlInput.value;
+
+            if (!url) return;
+
+            // UI Reset
+            errorContainer.classList.add('hidden');
+            playerContainer.classList.remove('hidden');
+            // Trigger fade in
+            setTimeout(() => {
+                playerContainer.classList.remove('opacity-0', 'translate-y-4');
+            }, 50);
+
+            statusText.textContent = "Extracting Audio Stream...";
+            statusText.parentElement.querySelector('div').className = "w-2 h-2 rounded-full bg-yellow-400 animate-ping"; // Loading state
+
+            // Loading Button State
+            const originalBtnContent = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            const streamUrl = `/stream?url=${encodeURIComponent(url)}&t=${Date.now()}`;
+
+            audioPlayer.src = streamUrl;
+
+            audioPlayer.onloadeddata = () => {
+                statusText.textContent = "Playing Stream";
+
+                // Success state indicator
+                statusText.parentElement.querySelector('div').className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+
+                // Reset Button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnContent;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+                audioPlayer.play().catch(e => {
+                    console.log("Autoplay prevented:", e);
+                    statusText.textContent = "Tap play to start";
+                });
+            };
+
+            audioPlayer.onerror = () => {
+                // Reset Button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnContent;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+                // Error State
+                playerContainer.classList.add('hidden');
+                playerContainer.classList.add('opacity-0', 'translate-y-4'); // Reset fade
+
+                errorText.textContent = "Failed to extract audio. The video might be restricted or invalid.";
+                errorContainer.classList.remove('hidden');
+            };
+        });
+
+        // Media Session API for mobile background control
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: 'Your Audio Tube',
+                artist: 'Streaming Service',
+            });
+            navigator.mediaSession.setActionHandler('play', () => audioPlayer.play());
+            navigator.mediaSession.setActionHandler('pause', () => audioPlayer.pause());
+        }
+    </script>
+</body>
+
+</html>
