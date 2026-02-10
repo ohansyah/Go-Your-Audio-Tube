@@ -26,33 +26,42 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'drop-in': 'dropIn 1s ease-out forwards',
-                        'filter-pass': 'filterPass 2s ease-in-out forwards 1s',
-                        'emerge': 'emerge 1s ease-out forwards 2.5s',
-                        'pulse-glow': 'pulseGlow 2s infinite'
+                        'process-flow': 'processFlow 3s infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'spin-slow': 'spin 3s linear infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
                         },
-                        dropIn: {
-                            '0%': { transform: 'translateY(-100px) scale(1.2)', opacity: '0' },
-                            '60%': { transform: 'translateY(10px) scale(1)', opacity: '1' },
-                            '100%': { transform: 'translateY(0) scale(1)', opacity: '1' }
-                        },
-                        filterPass: {
-                            '0%': { transform: 'scale(1)', filter: 'brightness(1)' },
-                            '50%': { transform: 'scale(0.8)', filter: 'brightness(1.5) sepia(1)' }, // turning gold
-                            '100%': { transform: 'scale(0)', opacity: '0' } // Disappear into the funnel
-                        },
-                        emerge: {
-                            '0%': { transform: 'translateY(20px) scale(0.5)', opacity: '0' },
-                            '100%': { transform: 'translateY(0) scale(1)', opacity: '1' }
+                        processFlow: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '40%': { transform: 'translateX(0)', opacity: '1' },
+                            '60%': { transform: 'translateX(0)', opacity: '0' },
+                            '100%': { transform: 'translateX(100%)', opacity: '0' }
                         },
                         pulseGlow: {
                             '0%, 100%': { boxShadow: '0 0 15px rgba(246, 235, 97, 0.2)' },
                             '50%': { boxShadow: '0 0 25px rgba(246, 235, 97, 0.6)' }
+                        },
+                        // New Animations for Pipeline
+                        heavyIn: {
+                            '0%': { transform: 'translateX(-50px) scale(0.8)', opacity: '0' },
+                            '20%': { transform: 'translateX(0) scale(1)', opacity: '1' },
+                            '40%': { transform: 'scale(0.9)', opacity: '0.5', filter: 'grayscale(100%)' }, // Being consumed
+                            '100%': { transform: 'scale(0)', opacity: '0' }
+                        },
+                        proxyPulse: {
+                            '0%, 100%': { transform: 'scale(1)', filter: 'drop-shadow(0 0 5px rgba(200,16,46,0.5))' },
+                            '50%': { transform: 'scale(1.1)', filter: 'drop-shadow(0 0 15px rgba(246,235,97,0.8))' }
+                        },
+                        lightOut: {
+                            '0%': { transform: 'translateX(-20px) scale(0)', opacity: '0' },
+                            '40%': { transform: 'translateX(-20px) scale(0)', opacity: '0' }, // Wait for heavy to be consumed
+                            '60%': { transform: 'translateX(0) scale(1)', opacity: '1' },
+                            '100%': { transform: 'translateX(50px)', opacity: '0' } // Float away
                         }
                     }
                 }
@@ -89,6 +98,89 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #C8102E;
         }
+
+        /* Cycle Time: 5 Seconds */
+        @keyframes slideIn {
+            0% {
+                transform: translateX(-150%);
+                opacity: 0;
+            }
+
+            20% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            35% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+        }
+
+        @keyframes processPulse {
+
+            0%,
+            25% {
+                transform: scale(1);
+                border-color: #374151;
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            }
+
+            30%,
+            55% {
+                transform: scale(1.1);
+                border-color: #C8102E;
+                box-shadow: 0 0 30px rgba(200, 16, 46, 0.4);
+            }
+
+            65%,
+            100% {
+                transform: scale(1);
+                border-color: #374151;
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+            }
+        }
+
+        @keyframes emitAudio {
+
+            0%,
+            55% {
+                transform: translateX(-50%) scale(0.5);
+                opacity: 0;
+            }
+
+            65% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+
+            90% {
+                transform: translateX(200%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(200%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
     </style>
 </head>
 
@@ -117,6 +209,91 @@
                 <span class="text-liverpool-gold">Why carry the weight?</span> <br>
                 Strip away the visual noise. Experience pure, lightweight audio freedom.
             </p>
+
+            <!-- Pipeline Animation -->
+            <div class="relative w-full max-w-4xl p-8 flex items-center justify-between gap-4">
+
+                <div class="flex flex-col items-center gap-2 w-1/3">
+                    <div class="relative w-20 h-14 flex items-center justify-center
+                                [animation:slideIn_5s_infinite_ease-in-out]">
+
+                        <div class="w-12 h-8 bg-red-600 rounded-lg flex items-center justify-center shadow-lg">
+                            <div class="border-l-[10px] border-l-white border-y-[6px] border-y-transparent"></div>
+                        </div>
+
+                        <div
+                            class="absolute -top-3 -right-2 bg-red-800 text-red-100 text-[9px] font-bold px-2 py-0.5 rounded border border-red-500 shadow-sm z-10">
+                            HEAVY
+                        </div>
+
+                        <div
+                            class="absolute -top-3 -left-2 bg-yellow-400 text-black text-[9px] font-black px-1.5 py-0.5 rounded border-2 border-slate-900 shadow-sm -rotate-12 z-10">
+                            ADS
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex flex-col items-center justify-center relative z-10 w-1/3">
+                    <div class="w-16 h-16 rounded-full border-2 border-red-800 flex items-center justify-center relative
+                                [animation:processPulse_5s_infinite]">
+
+                        <svg class="w-8 h-8 text-red-500 animate-spin-slow" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99">
+                            </path>
+                        </svg>
+
+                        <div class="absolute inset-0 rounded-full bg-red-500/10 blur-xl"></div>
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <div class="flex justify-center gap-1">
+                            <span class="w-1 h-1 bg-red-500 rounded-full animate-ping"></span>
+                            <span class="w-1 h-1 bg-red-500 rounded-full animate-ping [animation-delay:0.2s]"></span>
+                            <span class="w-1 h-1 bg-red-500 rounded-full animate-ping [animation-delay:0.4s]"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="flex flex-col items-center gap-2 w-1/3">
+                    <div class="relative w-20 h-14 flex items-center justify-center
+                                [animation:emitAudio_5s_infinite_ease-out]">
+
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.3)]
+                                    animate-[float_3s_ease-in-out_infinite] z-10">
+                            <svg class="w-5 h-5 text-white drop-shadow-md" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
+                                </path>
+                            </svg>
+                        </div>
+
+                        <div class="absolute -top-5 left-1/2 -translate-x-1/2 flex gap-1">
+                            <span
+                                class="bg-white-950 text-white-400 text-[9px] font-bold px-2 py-0.5 rounded border border-red-500/30 whitespace-nowrap shadow-lg">
+                                NO ADS
+                            </span>
+                            <span
+                                class="bg-white-950 text-white-400 text-[9px] font-bold px-2 py-0.5 rounded border border-red-500/30 whitespace-nowrap shadow-lg">
+                                LIGHT
+                            </span>
+                        </div>
+
+                        <div class="absolute -right-6 flex gap-0.5 h-8 items-center opacity-50">
+                            <div class="w-1 bg-red-400 rounded-full animate-[pulse_1s_infinite] h-3"></div>
+                            <div class="w-1 bg-red-400 rounded-full animate-[pulse_1.2s_infinite] h-6"></div>
+                            <div class="w-1 bg-red-400 rounded-full animate-[pulse_0.8s_infinite] h-4"></div>
+                            <div class="w-1 bg-red-400 rounded-full animate-[pulse_1.1s_infinite] h-7"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
 
             <form id="proxyForm" class="space-y-5 relative z-10">
                 <div class="group/input">
